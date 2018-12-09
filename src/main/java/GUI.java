@@ -24,8 +24,10 @@ import java.util.ArrayList;
  */
 public class GUI {
     private Conversion conversion = new Conversion();
-    private String[] fileTypes = {"png","jpg"};
+    private String[] fileTypes = {"png", "jpg"};
     private String fileExtension = "png";
+    private File inputFile;
+    private boolean outputToText = false;
 
     private JPanel panel;
     private JTextField InputFile;
@@ -33,7 +35,6 @@ public class GUI {
     private JLabel InputLabel;
     private JLabel OutputLabel;
     private JProgressBar progressBar1;
-    private JTextArea Output;
     private JCheckBox OutputEnable;
     private JLabel ScaleRatioLabel;
     private JTextField FileTypesTextInputFeild;
@@ -71,6 +72,7 @@ public class GUI {
     private JLabel JobsLabel;
     private JTextField JobsTextField;
     private JTextField ScaleRatioInput;
+    private JTextArea OutputTextFeild;
 
 
     public GUI() {
@@ -83,7 +85,7 @@ public class GUI {
                 ScaleSelect.setSelected(false);
                 DenoiseSelect.setSelected(false);
                 conversion.mode = "noise";
-                OutputFile.setText(InputFile.getText() + conversion.getOutputHeaders());
+                updateInOut(inputFile);
             }
         });
         ScaleSelect.addActionListener(new ActionListener() {
@@ -91,7 +93,7 @@ public class GUI {
                 DenoiseScaleSelect.setSelected(false);
                 DenoiseSelect.setSelected(false);
                 conversion.mode = "scale";
-                OutputFile.setText(InputFile.getText() + conversion.getOutputHeaders());
+                updateInOut(inputFile);
             }
         });
         DenoiseSelect.addActionListener(new ActionListener() {
@@ -99,7 +101,7 @@ public class GUI {
                 DenoiseScaleSelect.setSelected(false);
                 ScaleSelect.setSelected(false);
                 conversion.mode = "noise_scale";
-                OutputFile.setText(InputFile.getText() + conversion.getOutputHeaders());
+                updateInOut(inputFile);
             }
         });
 
@@ -108,19 +110,19 @@ public class GUI {
          */
         InputFile.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                String input = InputFile.getText().trim();
-                int lastIndexOfSeperator = input.lastIndexOf("/")+1;
-                String ParentDir = input.substring(0,lastIndexOfSeperator);
-                String ChildDir = input.substring(lastIndexOfSeperator);
-                File file = new File(ParentDir,ChildDir);
-                if (file.getAbsoluteFile().exists()) {
-                    if (file.isFile()) {
-                        updateInOut(file);
-                    } else if (file.isDirectory()) {
-                        updateInOut(file);
+                String inputString = InputFile.getText().trim();
+                int lastIndexOfSeperator = inputString.lastIndexOf("/") + 1;
+                String ParentDir = inputString.substring(0, lastIndexOfSeperator);
+                String ChildDir = inputString.substring(lastIndexOfSeperator);
+                inputFile = new File(ParentDir, ChildDir);
+                if (inputFile.getAbsoluteFile().exists()) {
+                    if (inputFile.isFile()) {
+                        updateInOut(inputFile);
+                    } else if (inputFile.isDirectory()) {
+                        updateInOut(inputFile);
                         conversion.recursive_directory = true;
                     } else {
-                        updateInOut(file);
+                        updateInOut(inputFile);
                         conversion.recursive_directory = false;
                     }
                 } else JOptionPane.showMessageDialog(null, "That is not a valid file!");
@@ -141,7 +143,7 @@ public class GUI {
                 Denoise2.setSelected(false);
                 Denoise3.setSelected(false);
                 conversion.noise_level = "1";
-                OutputFile.setText(InputFile.getText() + conversion.getOutputHeaders());
+                updateInOut(inputFile);
             }
         });
         Denoise2.addActionListener(new ActionListener() {
@@ -149,7 +151,7 @@ public class GUI {
                 Denoise1.setSelected(false);
                 Denoise3.setSelected(false);
                 conversion.noise_level = "2";
-                OutputFile.setText(InputFile.getText() + conversion.getOutputHeaders());
+                updateInOut(inputFile);
             }
         });
         Denoise3.addActionListener(new ActionListener() {
@@ -157,7 +159,7 @@ public class GUI {
                 Denoise1.setSelected(false);
                 Denoise2.setSelected(false);
                 conversion.noise_level = "3";
-                OutputFile.setText(InputFile.getText() + conversion.getOutputHeaders());
+                updateInOut(inputFile);
             }
         });
 
@@ -172,7 +174,7 @@ public class GUI {
                 }
                 if (isInt)
                     conversion.block_Size = BlockSizeLabel.getText();
-                OutputFile.setText(InputFile.getText() + conversion.getOutputHeaders());
+                updateInOut(inputFile);
             }
         });
 
@@ -187,21 +189,21 @@ public class GUI {
                 }
                 if (isInt)
                     conversion.jobs = JobsTextField.getText();
-                OutputFile.setText(InputFile.getText() + conversion.getOutputHeaders());
+                updateInOut(inputFile);
             }
         });
 
         DisableGpuButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 conversion.disable_Gpu = DisableGpuButton.isSelected();
-                OutputFile.setText(InputFile.getText() + conversion.getOutputHeaders());
+                updateInOut(inputFile);
             }
         });
 
         ForceOpenCLButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 conversion.force_Opencl = ForceOpenCLButton.isSelected();
-                OutputFile.setText(InputFile.getText() + conversion.getOutputHeaders());
+                updateInOut(inputFile);
             }
         });
 
@@ -216,15 +218,14 @@ public class GUI {
                 }
                 if (isInt)
                     conversion.scale_Ratio = ScaleRatioInput.getText();
-                OutputFile.setText(InputFile.getText() + conversion.getOutputHeaders());
+                updateInOut(inputFile);
             }
         });
 
         //Fills extension process box
         String temp = "";
-        for (int x = 0; x < fileTypes.length; x++)
-        {
-            if (x != fileTypes.length -1)
+        for (int x = 0; x < fileTypes.length; x++) {
+            if (x != fileTypes.length - 1)
                 temp += fileTypes[x] + ";";
             else temp += fileTypes[x];
         }
@@ -234,16 +235,14 @@ public class GUI {
             public void actionPerformed(ActionEvent actionEvent) {
                 fileTypes = FileTypesTextInputFeild.getText().split(";");
                 ExtensionSelection.removeAllItems();
-                for (int x = 0; x < fileTypes.length; x++)
-                {
+                for (int x = 0; x < fileTypes.length; x++) {
                     ExtensionSelection.addItem(fileTypes[x]);
                 }
             }
         });
 
         //Fills Extension Selection
-        for (int x = 0; x < fileTypes.length; x++)
-        {
+        for (int x = 0; x < fileTypes.length; x++) {
             ExtensionSelection.addItem(fileTypes[x]);
         }
 
@@ -263,12 +262,12 @@ public class GUI {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        for (int x = 0; x < processor.length;x++)
+        for (int x = 0; x < processor.length; x++)
             ProcessorSelection.addItem(processor[x]);
         //Selects processor
         ProcessorSelection.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                conversion.processor = ""+ProcessorSelection.getSelectedIndex();
+                conversion.processor = "" + ProcessorSelection.getSelectedIndex();
             }
         });
 
@@ -277,12 +276,22 @@ public class GUI {
          */
         StartButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                execute(conversion.getSettings(OutputFile.getText()));
+                try {
+                    execute(conversion.getSettings(OutputFile.getText()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
 
-
+        OutputEnable.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                outputToText = OutputEnable.isSelected();
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -293,38 +302,41 @@ public class GUI {
         frame.setVisible(true);
     }
 
-    public static void execute(String commandLine) {
-        String command = "/usr/bin/x-terminal-emulator -e waifu2x-converter-cpp" + commandLine;
-        System.out.println(command);
-        try {
-            Runtime.getRuntime().exec(command);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void execute(String commandLine) throws IOException, InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder("/bin/bash","-c",(" waifu2x-converter-cpp" + commandLine));
+        Process p = processBuilder.start();
+        InputStream is = p.getInputStream();
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        String line = null;
+        if (outputToText)
+        {
+        while ((line = br.readLine()) != null) {
+            OutputTextFeild.append("\n" + line);
         }
+        }
+        int r = p.waitFor(); // Let the process finish.
     }
+
     public String[] getProcessors() throws IOException, InterruptedException {
         ArrayList<String> strings = new ArrayList<String>();
 
-        ProcessBuilder processBuilder = new ProcessBuilder("/usr/bin/x-terminal-emulator","-e","waifu2x-converter-cpp --list-processor");
+        ProcessBuilder processBuilder = new ProcessBuilder("/bin/bash", "-c", "waifu2x-converter-cpp --list-processor");
         Process p = processBuilder.start();
         InputStream is = p.getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         String line = null;
         while ((line = br.readLine()) != null) {
-            System.out.println(line);
+            strings.add(line);
         }
         int r = p.waitFor(); // Let the process finish.
-        if (r == 0) { // No error
-            // run cmd2.
-        }
         return strings.toArray(new String[strings.size()]);
     }
-    public void updateInOut(File file)
-    {
+
+    public void updateInOut(File file) {
         String absolutePATH = file.getAbsolutePath();
         conversion.input = absolutePATH;
         absolutePATH = absolutePATH.substring(0, absolutePATH.lastIndexOf("."));
-        OutputFile.setText(absolutePATH + conversion.getOutputHeaders() + "."+fileExtension);
+        OutputFile.setText(absolutePATH + conversion.getOutputHeaders() + "." + fileExtension);
     }
 
 }
