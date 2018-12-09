@@ -34,18 +34,15 @@ public class GUI {
     private JTextField OutputFile;
     private JLabel InputLabel;
     private JLabel OutputLabel;
-    private JProgressBar progressBar1;
     private JCheckBox OutputEnable;
     private JLabel ScaleRatioLabel;
     private JTextField FileTypesTextInputFeild;
     private JButton StartButton;
     private JPanel ScaleRatioPanel;
     private JPanel FileTypePanel;
-    private JPanel ProcessorPanel;
     private JCheckBox DisableGpuButton;
     private JCheckBox ForceOpenCLButton;
     private JComboBox ProcessorSelection;
-    private JPanel JpegDenoiseSettingsPannel;
     private JPanel OutputExtensionPannel;
     private JPanel BlockSizePannel;
     private JTextField BlockSizeTextFeild;
@@ -63,7 +60,6 @@ public class GUI {
     private JRadioButton DenoiseSelect;
     private JRadioButton ScaleSelect;
     private JRadioButton DenoiseScaleSelect;
-    private JTextArea StatusText;
     private JRadioButton Denoise1;
     private JRadioButton Denoise2;
     private JRadioButton Denoise3;
@@ -73,11 +69,20 @@ public class GUI {
     private JTextField JobsTextField;
     private JTextField ScaleRatioInput;
     private JTextArea OutputTextFeild;
+    private JSeparator VerticalA;
+    private JSeparator VerticalB;
+    private JPanel ScaleAndProcessPanel;
+    private JPanel DenoiseLevel;
+    private JPanel OutputAndStartPanel;
+    private JPanel InputOutputPanel;
+    private JLabel ProcessorLabel;
+    private JPanel ProcessingPanel;
+    private JPanel JobsPanel;
+    private JSeparator VerticalC;
     private JList OutputListFeild;
 
 
     public GUI() {
-
         /*
          * Conversion mode select
          */
