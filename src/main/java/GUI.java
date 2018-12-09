@@ -24,7 +24,7 @@ import java.util.ArrayList;
  */
 public class GUI {
     private Conversion conversion = new Conversion();
-    private String[] fileTypes = {"png", "jpg"};
+    private String[] fileTypes = {"bmp","dib","exr","hdr","jp2","jpe","jpeg","jpg","pbm","pgm","pic","png","pnm","ppm","pxm","ras","sr","tif","tiff","webp"};
     private String fileExtension = "png";
     private File inputFile;
     private boolean outputToText = false;
@@ -73,6 +73,7 @@ public class GUI {
     private JTextField JobsTextField;
     private JTextField ScaleRatioInput;
     private JTextArea OutputTextFeild;
+    private JList OutputListFeild;
 
 
     public GUI() {
@@ -84,7 +85,7 @@ public class GUI {
             public void actionPerformed(ActionEvent actionEvent) {
                 ScaleSelect.setSelected(false);
                 DenoiseSelect.setSelected(false);
-                conversion.mode = "noise";
+                conversion.mode = "noise_scale";
                 updateInOut(inputFile);
             }
         });
@@ -100,7 +101,7 @@ public class GUI {
             public void actionPerformed(ActionEvent actionEvent) {
                 DenoiseScaleSelect.setSelected(false);
                 ScaleSelect.setSelected(false);
-                conversion.mode = "noise_scale";
+                conversion.mode = "noise";
                 updateInOut(inputFile);
             }
         });
@@ -277,7 +278,7 @@ public class GUI {
         StartButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    execute(conversion.getSettings(OutputFile.getText()));
+                    execute(conversion.getSettings("'"+OutputFile.getText()+"'"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -303,7 +304,8 @@ public class GUI {
     }
 
     public void execute(String commandLine) throws IOException, InterruptedException {
-        ProcessBuilder processBuilder = new ProcessBuilder("/bin/bash","-c",(" waifu2x-converter-cpp" + commandLine));
+        System.out.println("waifu2x-converter-cpp" + commandLine);
+        ProcessBuilder processBuilder = new ProcessBuilder("/bin/bash","-c",("waifu2x-converter-cpp" + commandLine));
         Process p = processBuilder.start();
         InputStream is = p.getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -315,6 +317,8 @@ public class GUI {
         }
         }
         int r = p.waitFor(); // Let the process finish.
+
+        System.out.println("Finsihed");
     }
 
     public String[] getProcessors() throws IOException, InterruptedException {
