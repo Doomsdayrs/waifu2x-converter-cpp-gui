@@ -5,6 +5,7 @@ Java GUI for the waifu2x-converter-cpp
 - [x] Single file conversion
 - [ ] Multiple file conversion
 - [ ] Directory conversion
+- [ ] Storing previous settings
 
 ##Install directions
 1. Download the latest jar [here](https://github.com/Doomsdayrs/waifu2x-converter-cpp-gui/raw/master/Waifu2xConverterCppGui.jar) 
