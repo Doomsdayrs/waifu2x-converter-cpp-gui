@@ -17,9 +17,27 @@
  * @author github.com/doomsdayrs
  */
 public class Conversion {
+
+    public Conversion()
+    {
+        this.mode = "noise_scale";
+        this.block_Size = "256";
+        this.jobs = "1";
+        this.scale_Ratio = "1.0";
+        this.noise_level = "1";
+        this.processor = "0";
+    }
+
+    public Conversion(String scaling, String blockSize,String Jobs, String scaleRatio)
+    {
+        this.mode = scaling;
+        this.block_Size = blockSize;
+        this.jobs = Jobs;
+        this.scale_Ratio = scaleRatio;
+    }
+
     public String input;
     public String output;
-
 
     public String block_Size;
 
@@ -36,10 +54,27 @@ public class Conversion {
      * Must be either 0 or 1
      */
     public boolean recursive_directory;
+
     private String model_Dir;
 
-    public String getSettings() {
-        String output = " -i " + input + " -o " + " --block_size " + block_Size;
+
+
+
+
+    public String getOutputHeaders()
+    {
+        String output = "";
+        if (recursive_directory)
+            output+=" (Folder)";
+        else output += " (Photo)";
+        output += " (" + mode + ")";
+        output += " (Level"+noise_level+")";
+        output += " (x" + scale_Ratio + ")";
+        return output;
+    }
+
+    public String getSettings(String outputFile) {
+        String output = " -i " + input + " -o " + outputFile +" --block_size " + block_Size;
         if (disable_Gpu)
             output += " --disable-gpu";
         if (force_Opencl)
