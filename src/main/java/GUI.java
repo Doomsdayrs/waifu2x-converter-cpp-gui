@@ -117,7 +117,14 @@ public class GUI {
         InputFile.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 String inputString = InputFile.getText().trim();
+                if (inputString.contains("file://"))
+                   inputString = inputString.replace("file://","");
+                if (inputString.contains("%20"))
+                    inputString = inputString.replaceAll("%20"," ");
+
                 int lastIndexOfSeperator = inputString.lastIndexOf("/") + 1;
+
+                InputFile.setText(inputString);
                 String ParentDir = inputString.substring(0, lastIndexOfSeperator);
                 String ChildDir = inputString.substring(lastIndexOfSeperator);
                 inputFile = new File(ParentDir, ChildDir);
@@ -229,27 +236,27 @@ public class GUI {
         });
 
         //Fills extension process box
-        String temp = "";
+        StringBuilder temp = new StringBuilder();
         for (int x = 0; x < fileTypes.length; x++) {
             if (x != fileTypes.length - 1)
-                temp += fileTypes[x] + ";";
-            else temp += fileTypes[x];
+                temp.append(fileTypes[x]).append(";");
+            else temp.append(fileTypes[x]);
         }
-        FileTypesTextInputFeild.setText(temp);
+        FileTypesTextInputFeild.setText(temp.toString());
 
         FileTypesTextInputFeild.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 fileTypes = FileTypesTextInputFeild.getText().split(";");
                 ExtensionSelection.removeAllItems();
-                for (int x = 0; x < fileTypes.length; x++) {
-                    ExtensionSelection.addItem(fileTypes[x]);
+                for (String fileType : fileTypes) {
+                    ExtensionSelection.addItem(fileType);
                 }
             }
         });
 
         //Fills Extension Selection
-        for (int x = 0; x < fileTypes.length; x++) {
-            ExtensionSelection.addItem(fileTypes[x]);
+        for (String fileType : fileTypes) {
+            ExtensionSelection.addItem(fileType);
         }
 
         ExtensionSelection.addActionListener(new ActionListener() {
@@ -268,8 +275,7 @@ public class GUI {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        for (int x = 0; x < processor.length; x++)
-            ProcessorSelection.addItem(processor[x]);
+        for (String s : processor) ProcessorSelection.addItem(s);
         //Selects processor
         ProcessorSelection.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -282,13 +288,17 @@ public class GUI {
          */
         StartButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                try {
-                    execute(conversion.getSettings("'"+OutputFile.getText()+"'"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            execute(conversion.getSettings("'"+OutputFile.getText()+"'"));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
         });
 
@@ -308,13 +318,13 @@ public class GUI {
         frame.setVisible(true);
     }
 
-    public void execute(String commandLine) throws IOException, InterruptedException {
+    private void execute(String commandLine) throws IOException, InterruptedException {
         System.out.println("waifu2x-converter-cpp" + commandLine);
         ProcessBuilder processBuilder = new ProcessBuilder("/bin/bash","-c",("waifu2x-converter-cpp" + commandLine));
         Process p = processBuilder.start();
         InputStream is = p.getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        String line = null;
+        String line;
         if (outputToText)
         {
         while ((line = br.readLine()) != null) {
@@ -326,22 +336,22 @@ public class GUI {
         System.out.println("Finsihed");
     }
 
-    public String[] getProcessors() throws IOException, InterruptedException {
+    private String[] getProcessors() throws IOException, InterruptedException {
         ArrayList<String> strings = new ArrayList<String>();
 
         ProcessBuilder processBuilder = new ProcessBuilder("/bin/bash", "-c", "waifu2x-converter-cpp --list-processor");
         Process p = processBuilder.start();
         InputStream is = p.getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        String line = null;
+        String line;
         while ((line = br.readLine()) != null) {
             strings.add(line);
         }
         int r = p.waitFor(); // Let the process finish.
-        return strings.toArray(new String[strings.size()]);
+        return strings.toArray(new String[]{});
     }
 
-    public void updateInOut(File file) {
+    private void updateInOut(File file) {
         String absolutePATH = file.getAbsolutePath();
         conversion.input = absolutePATH;
         absolutePATH = absolutePATH.substring(0, absolutePATH.lastIndexOf("."));

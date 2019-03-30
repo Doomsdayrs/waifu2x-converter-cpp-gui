@@ -1,3 +1,4 @@
+
 /**
  * This file is part of Waifu2xConverterCppGui.
  * Waifu2xConverterCppGui is free software: you can redistribute it and/or modify
@@ -16,10 +17,13 @@
  *
  * @author github.com/doomsdayrs
  */
+
+
 public class Conversion {
 
-    public Conversion()
+    Conversion()
     {
+
         this.mode = "noise_scale";
         this.block_Size = "256";
         this.jobs = "1";
@@ -36,19 +40,19 @@ public class Conversion {
         this.scale_Ratio = scaleRatio;
     }
 
-    public String input;
-    public String output;
+    String input;
+    String output;
 
-    public String block_Size;
+    String block_Size;
 
-    public boolean disable_Gpu;
-    public boolean force_Opencl;
+    boolean disable_Gpu;
+    boolean force_Opencl;
 
-    public String processor;
-    public String jobs;
-    public String scale_Ratio;
-    public String noise_level;
-    public String mode;
+    String processor;
+    String jobs;
+    String scale_Ratio;
+    String noise_level;
+    String mode;
     public boolean quiet;
     /**
      * Must be either 0 or 1
@@ -57,11 +61,7 @@ public class Conversion {
 
     private String model_Dir;
 
-
-
-
-
-    public String getOutputHeaders()
+    String getOutputHeaders()
     {
         String output = "";
         if (recursive_directory)
@@ -73,8 +73,8 @@ public class Conversion {
         return output;
     }
 
-    public String getSettings(String outputFile) {
-        String output = " -i " + input + " -o " + outputFile +" --block_size " + block_Size;
+    String getSettings(String outputFile) {
+        String output = " -i '" + input + "' -o " + outputFile +" --block_size " + block_Size;
         if (disable_Gpu)
             output += " --disable-gpu";
         if (force_Opencl)
