@@ -22,8 +22,8 @@ import java.util.ArrayList;
  *
  * @author github.com/doomsdayrs
  */
-public class GUI {
-    private Conversion conversion = new Conversion();
+class GUI {
+    private final Conversion conversion = new Conversion();
     private String[] fileTypes = {"bmp","dib","exr","hdr","jp2","jpe","jpeg","jpg","pbm","pgm","pic","png","pnm","ppm","pxm","ras","sr","tif","tiff","webp"};
     private String fileExtension = "png";
     private File inputFile;
@@ -180,7 +180,7 @@ public class GUI {
             public void actionPerformed(ActionEvent actionEvent) {
                 boolean isInt = false;
                 try {
-                    int INT = Integer.parseInt(BlockSizeTextFeild.getText());
+                    Integer.parseInt(BlockSizeTextFeild.getText());
                     isInt = true;
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(null, "That is not an integer dumb ass");
@@ -195,7 +195,7 @@ public class GUI {
             public void actionPerformed(ActionEvent actionEvent) {
                 boolean isInt = false;
                 try {
-                    int INT = Integer.parseInt(JobsTextField.getText());
+                    Integer.parseInt(JobsTextField.getText());
                     isInt = true;
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(null, "That is not an integer dumb ass");
@@ -224,7 +224,7 @@ public class GUI {
             public void actionPerformed(ActionEvent actionEvent) {
                 boolean isInt = false;
                 try {
-                    double INT = Double.parseDouble(ScaleRatioInput.getText());
+                    Double.parseDouble(ScaleRatioInput.getText());
                     isInt = true;
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(null, "That is not an double dumb ass");

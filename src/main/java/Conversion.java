@@ -19,7 +19,7 @@
  */
 
 
-public class Conversion {
+class Conversion {
 
     Conversion()
     {
@@ -32,13 +32,15 @@ public class Conversion {
         this.processor = "0";
     }
 
-    public Conversion(String scaling, String blockSize,String Jobs, String scaleRatio)
-    {
-        this.mode = scaling;
-        this.block_Size = blockSize;
-        this.jobs = Jobs;
-        this.scale_Ratio = scaleRatio;
-    }
+// --Commented out by Inspection START (3/30/19 4:30 PM):
+//    public Conversion(String scaling, String blockSize,String Jobs, String scaleRatio)
+//    {
+//        this.mode = scaling;
+//        this.block_Size = blockSize;
+//        this.jobs = Jobs;
+//        this.scale_Ratio = scaleRatio;
+//    }
+// --Commented out by Inspection STOP (3/30/19 4:30 PM)
 
     String input;
     String output;
