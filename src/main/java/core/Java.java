@@ -9,7 +9,24 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
-
+/**
+ * This file is part of Waifu2xConverterCppGui.
+ * Waifu2xConverterCppGui is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Foobar is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with Waifu2xConverterCppGui.  If not, see <https://www.gnu.org/licenses/>.
+ * ====================================================================
+ * Waifu2xConverterCppGui
+ * 06 / May / 2019
+ *
+ * @author github.com/doomsdayrs
+ */
 public class Java {
     static String[] fileTypes = {"bmp","dib","exr","hdr","jp2","jpe","jpeg","jpg","pbm","pgm","pic","png","pnm","ppm","pxm","ras","sr","tif","tiff","webp"};
     static File inputFile;
