@@ -83,7 +83,7 @@ class GUI {
     private JSeparator VerticalC;
     private JList OutputListFeild;
 
-
+    public static boolean debug = false;
     public GUI() {
         /*
          * Conversion mode select
@@ -311,6 +311,10 @@ class GUI {
     }
 
     public static void main(String[] args) {
+        for(String string:args)
+            if (string.equalsIgnoreCase("-debug")||string.equalsIgnoreCase("-d"))
+                debug = true;
+
         JFrame frame = new JFrame("Waifu2x-converter-cpp-gui");
         frame.setContentPane(new GUI().panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -319,7 +323,10 @@ class GUI {
     }
 
     private void execute(String commandLine) throws IOException, InterruptedException {
+
+        if (debug)
         System.out.println("waifu2x-converter-cpp" + commandLine);
+
         ProcessBuilder processBuilder = new ProcessBuilder("/bin/bash","-c",("waifu2x-converter-cpp" + commandLine));
         Process p = processBuilder.start();
         InputStream is = p.getInputStream();
