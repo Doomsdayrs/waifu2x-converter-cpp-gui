@@ -1,3 +1,4 @@
+package core;
 
 /**
  * This file is part of Waifu2xConverterCppGui.

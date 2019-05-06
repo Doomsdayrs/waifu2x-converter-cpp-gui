@@ -1,3 +1,5 @@
+package core;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -114,32 +116,30 @@ class GUI {
         /*
          * Input/Output File control
          */
-        InputFile.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                String inputString = InputFile.getText().trim();
-                if (inputString.contains("file://"))
-                   inputString = inputString.replace("file://","");
-                if (inputString.contains("%20"))
-                    inputString = inputString.replaceAll("%20"," ");
+        InputFile.addActionListener(actionEvent -> {
+            String inputString = InputFile.getText().trim();
+            if (inputString.contains("file://"))
+               inputString = inputString.replace("file://","");
+            if (inputString.contains("%20"))
+                inputString = inputString.replaceAll("%20"," ");
 
-                int lastIndexOfSeperator = inputString.lastIndexOf("/") + 1;
+            int lastIndexOfSeperator = inputString.lastIndexOf("/") + 1;
 
-                InputFile.setText(inputString);
-                String ParentDir = inputString.substring(0, lastIndexOfSeperator);
-                String ChildDir = inputString.substring(lastIndexOfSeperator);
-                inputFile = new File(ParentDir, ChildDir);
-                if (inputFile.getAbsoluteFile().exists()) {
-                    if (inputFile.isFile()) {
-                        updateInOut(inputFile);
-                    } else if (inputFile.isDirectory()) {
-                        updateInOut(inputFile);
-                        conversion.recursive_directory = true;
-                    } else {
-                        updateInOut(inputFile);
-                        conversion.recursive_directory = false;
-                    }
-                } else JOptionPane.showMessageDialog(null, "That is not a valid file!");
-            }
+            InputFile.setText(inputString);
+            String ParentDir = inputString.substring(0, lastIndexOfSeperator);
+            String ChildDir = inputString.substring(lastIndexOfSeperator);
+            inputFile = new File(ParentDir, ChildDir);
+            if (inputFile.getAbsoluteFile().exists()) {
+                if (inputFile.isFile()) {
+                    updateInOut(inputFile);
+                } else if (inputFile.isDirectory()) {
+                    updateInOut(inputFile);
+                    conversion.recursive_directory = true;
+                } else {
+                    updateInOut(inputFile);
+                    conversion.recursive_directory = false;
+                }
+            } else JOptionPane.showMessageDialog(null, "That is not a valid file!");
         });
 
         OutputFile.addActionListener(new ActionListener() {
