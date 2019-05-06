@@ -28,7 +28,7 @@ import java.text.ParseException;
  * @author github.com/doomsdayrs
  */
 public class Java {
-    static String[] fileTypes = {"bmp","dib","exr","hdr","jp2","jpe","jpeg","jpg","pbm","pgm","pic","png","pnm","ppm","pxm","ras","sr","tif","tiff","webp"};
+    static String[] fileTypes = {"png","dib","exr","hdr","jp2","jpe","jpeg","jpg","pbm","pgm","pic","bmp","pnm","ppm","pxm","ras","sr","tif","tiff","webp"};
     static File inputFile;
     static String fileExtension = "png";
     static boolean outputToText = false;
@@ -88,6 +88,7 @@ public class Java {
         OutputFile.connect((Entry.Changed) entry -> {
             conversion.output = entry.getText() + conversion.getOutputHeaders();
         });
+
     }
 
     private static void updateInOut(File file) {
