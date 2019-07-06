@@ -27,17 +27,17 @@ import java.text.ParseException;
  *
  * @author github.com/doomsdayrs
  */
-public class Java {
+class Java {
     static String[] fileTypes = {"png","dib","exr","hdr","jp2","jpe","jpeg","jpg","pbm","pgm","pic","bmp","pnm","ppm","pxm","ras","sr","tif","tiff","webp"};
-    static File inputFile;
-    static String fileExtension = "png";
+    private static File inputFile;
+    private static final String fileExtension = "png";
     static boolean outputToText = false;
 
     public static String StoredString = "";
 
-    static Entry InputFile;
-    static Entry OutputFile;
-    static Conversion conversion;
+    private static Entry InputFile;
+    private static Entry OutputFile;
+    private static Conversion conversion;
 
     public static void main(String[] args) throws FileNotFoundException, ParseException {
         Gtk.init(args);
@@ -53,12 +53,12 @@ public class Java {
 
 
 
-    public static void build(Builder builder){
+    private static void build(Builder builder){
         InputFile = (Entry) builder.getObject("InputFile");
         OutputFile = (Entry) builder.getObject("OutputFile");
     }
 
-    public static void initialize(){
+    private static void initialize(){
         InputFile.connect((Entry.Changed) entry -> {
             String inputString = entry.getText().trim();
             if (!inputString.equals("")){
@@ -85,9 +85,7 @@ public class Java {
                 }
             } else JOptionPane.showMessageDialog(null, "That is not a valid file!");}
         });
-        OutputFile.connect((Entry.Changed) entry -> {
-            conversion.output = entry.getText() + conversion.getOutputHeaders();
-        });
+        OutputFile.connect((Entry.Changed) entry -> conversion.output = entry.getText() + conversion.getOutputHeaders());
 
     }
 
@@ -117,6 +115,7 @@ public class Java {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        assert decodedPath != null;
         if (decodedPath.toLowerCase().endsWith(".jar")) {
             System.out.println("Application was called from jar file");
             decodedPath = decodedPath.substring(0, decodedPath.lastIndexOf("/") + 1);

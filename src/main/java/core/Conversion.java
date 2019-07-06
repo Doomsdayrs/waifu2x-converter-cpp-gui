@@ -22,10 +22,9 @@ package core;
 
 class Conversion {
 
-    Conversion()
-    {
+    Conversion() {
 
-        this.mode = "noise_scale";
+        this.mode = "noise-scale";
         this.block_Size = "256";
         this.jobs = "1";
         this.scale_Ratio = "1.0";
@@ -64,28 +63,27 @@ class Conversion {
 
     private String model_Dir;
 
-    String getOutputHeaders()
-    {
+    String getOutputHeaders() {
         String output = "";
         if (recursive_directory)
-            output+=" (Folder)";
+            output += " (Folder)";
         else output += " (Photo)";
         output += " (" + mode + ")";
-        output += " (Level"+noise_level+")";
+        output += " (Level" + noise_level + ")";
         output += " (x" + scale_Ratio + ")";
         return output;
     }
 
     String getSettings(String outputFile) {
-        String output = " -i '" + input + "' -o " + outputFile +" --block_size " + block_Size;
+        String output = " -i '" + input + "' -o " + outputFile + " --block-size " + block_Size;
         if (disable_Gpu)
             output += " --disable-gpu";
         if (force_Opencl)
             output += " --force-OpenCL";
         output += " -p " + processor;
         output += " -j " + jobs;
-        output += " --scale_ratio " + scale_Ratio;
-        output += " --noise_level " + noise_level;
+        output += " --scale-ratio " + scale_Ratio;
+        output += " --noise-level " + noise_level;
         if (recursive_directory)
             output += " -r 1";
         else output += " -r 0";
