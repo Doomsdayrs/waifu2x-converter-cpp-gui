@@ -1,5 +1,6 @@
 package core;
 
+import org.gnome.gdk.EventKey;
 import org.gnome.gtk.*;
 
 import javax.swing.*;
@@ -9,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+
 /**
  * This file is part of Waifu2xConverterCppGui.
  * Waifu2xConverterCppGui is free software: you can redistribute it and/or modify
@@ -27,8 +29,8 @@ import java.text.ParseException;
  *
  * @author github.com/doomsdayrs
  */
-class Java {
-    static String[] fileTypes = {"png","dib","exr","hdr","jp2","jpe","jpeg","jpg","pbm","pgm","pic","bmp","pnm","ppm","pxm","ras","sr","tif","tiff","webp"};
+class GTK {
+    static String[] fileTypes = {"png", "dib", "exr", "hdr", "jp2", "jpe", "jpeg", "jpg", "pbm", "pgm", "pic", "bmp", "pnm", "ppm", "pxm", "ras", "sr", "tif", "tiff", "webp"};
     private static File inputFile;
     private static final String fileExtension = "png";
     static boolean outputToText = false;
@@ -41,53 +43,75 @@ class Java {
 
     public static void main(String[] args) throws FileNotFoundException, ParseException {
         Gtk.init(args);
-        Builder b = new Builder();
-        b.addFromFile("gui.glade");
-        Window window = (Window) b.getObject("Main");
+        Builder builder = new Builder();
+        builder.addFromFile("gui.glade");
+        Window window = (Window) builder.getObject("Main");
+
         conversion = new Conversion();
-        build(b);
-        initialize();
+
+        //Input setup
+        InputFile = (Entry) builder.getObject("InputFile");
+        InputFile.connect((Widget.KeyPressEvent) (widget, eventKey) -> {
+            String key = eventKey.getKeyval().toString();
+            key = key.substring(key.indexOf(".") + 1, key.length());
+            System.out.println("Key pressed: " + key);
+            if (key.equals("Return")) {
+                String inputString = InputFile.getText().trim();
+                if (!inputString.equals("")) {
+                    if (inputString.contains("file://"))
+                        inputString = inputString.replace("file://", "");
+                    if (inputString.contains("%20"))
+                        inputString = inputString.replaceAll("%20", " ");
+
+                    int lastIndexOfSeparator = inputString.lastIndexOf("/") + 1;
+                    String ParentDir = inputString.substring(0, lastIndexOfSeparator);
+                    String ChildDir = inputString.substring(lastIndexOfSeparator);
+                    inputFile = new File(ParentDir, ChildDir);
+                    if (inputFile.getAbsoluteFile().exists()) {
+                        if (inputFile.isFile()) {
+                            updateInOut(inputFile);
+                        } else if (inputFile.isDirectory()) {
+                            updateInOut(inputFile);
+                            conversion.recursive_directory = true;
+                        } else {
+                            updateInOut(inputFile);
+                            conversion.recursive_directory = false;
+                        }
+                        InputFile.setText(inputString);
+                        OutputFile.setText(inputString + conversion.getOutputHeaders());
+                    } else {
+                        JOptionPane.showMessageDialog(null, "That is not a valid file!");
+                        return false;
+                    }
+                } else OutputFile.setText("");
+            }
+            return true;
+        });
+
+        //Output setup
+        OutputFile = (Entry) builder.getObject("OutputFile");
+        OutputFile.connect(new Widget.KeyPressEvent() {
+            @Override
+            public boolean onKeyPressEvent(Widget widget, EventKey eventKey) {
+                String key = eventKey.getKeyval().toString();
+                key = key.substring(key.indexOf(".") + 1, key.length());
+                System.out.println("Key pressed: " + key);
+                if (key.equals("Return")) {
+                    String outputText = OutputFile.getText();
+                    if (!outputText.equals("")) {
+                        conversion.output = OutputFile.getText() + conversion.getOutputHeaders();
+                    } else return false;
+                }
+                return true;
+            }
+        });
+        OutputFile.connect((Entry.Changed) entry -> conversion.output = entry.getText() + conversion.getOutputHeaders());
+
+
         window.showAll();
         Gtk.main();
     }
 
-
-
-    private static void build(Builder builder){
-        InputFile = (Entry) builder.getObject("InputFile");
-        OutputFile = (Entry) builder.getObject("OutputFile");
-    }
-
-    private static void initialize(){
-        InputFile.connect((Entry.Changed) entry -> {
-            String inputString = entry.getText().trim();
-            if (!inputString.equals("")){
-            if (inputString.contains("file://"))
-                inputString = inputString.replace("file://","");
-            if (inputString.contains("%20"))
-                inputString = inputString.replaceAll("%20"," ");
-
-            int lastIndexOfSeperator = inputString.lastIndexOf("/") + 1;
-
-            entry.setText(inputString);
-            String ParentDir = inputString.substring(0, lastIndexOfSeperator);
-            String ChildDir = inputString.substring(lastIndexOfSeperator);
-            inputFile = new File(ParentDir, ChildDir);
-            if (inputFile.getAbsoluteFile().exists()) {
-                if (inputFile.isFile()) {
-                    updateInOut(inputFile);
-                } else if (inputFile.isDirectory()) {
-                    updateInOut(inputFile);
-                    conversion.recursive_directory = true;
-                } else {
-                    updateInOut(inputFile);
-                    conversion.recursive_directory = false;
-                }
-            } else JOptionPane.showMessageDialog(null, "That is not a valid file!");}
-        });
-        OutputFile.connect((Entry.Changed) entry -> conversion.output = entry.getText() + conversion.getOutputHeaders());
-
-    }
 
     private static void updateInOut(File file) {
         String absolutePATH = file.getAbsolutePath();
@@ -105,7 +129,7 @@ class Java {
      */
     public static String getExecDir() {
         String decodedPath = null;
-        String runtimePath = Java.class.getProtectionDomain()
+        String runtimePath = GTK.class.getProtectionDomain()
                 .getCodeSource().getLocation().getPath();
         System.out.println("\nGetting Execution direction...");
         System.out.println("Execution directory raw: " + runtimePath);
